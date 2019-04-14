@@ -1,4 +1,4 @@
-//Temp version to experiment
+//Main version. Make NO changes.
 /*
 -------------------Headers-----------------------
 */
@@ -21,7 +21,8 @@
 using namespace std;
 GLdouble cp_eqn[4] = {0.0, 0.0, 1.0, 0.0};
 int choice;
-float xmin = -10.0;
+float xmin = -8.0;
+float xmax = 8.0;
 
 //camera variables
 float angle = 0.0, yAngle = 0.0;
@@ -171,6 +172,7 @@ void renderScene(void){
         cam2();
     }
     else if(choice==2){
+      cam = 3;
       cam3();
     }
 
@@ -273,9 +275,16 @@ void processSpecialKeys(int key, int xx, int yy){
   switch(key){
     //left arrow key event
     case GLUT_KEY_LEFT:
-      if(cam==1 || cam==3){
+      if(cam==1){
           x += sin(angle - M_PI/2.0) * fraction;
           z += -cos(angle - M_PI/2.0) * fraction;
+      }
+      else if(cam==3){
+        if(x>xmin){
+          //printf("\n%f",x);
+          x += sin(angle - M_PI/2.0) * fraction;
+          z += -cos(angle - M_PI/2.0) * fraction;
+        }
       }
       else if(cam==2){
           zside -= sin(angle - M_PI/2.0) * fraction;
@@ -285,9 +294,15 @@ void processSpecialKeys(int key, int xx, int yy){
 
     //right arrow key event
     case GLUT_KEY_RIGHT:
-      if(cam==1 || cam==3){
+      if(cam==1){
           x += sin(M_PI/2.0 + angle) * fraction;
           z += -cos(M_PI/2.0 + angle) * fraction;
+      }
+      else if(cam==3){
+        if(x<xmax){
+          x += sin(M_PI/2.0 + angle) * fraction;
+          z += -cos(M_PI/2.0 + angle) * fraction;
+        }
       }
       else if(cam==2){
           zside -= sin(M_PI/2.0 + angle) * fraction;
