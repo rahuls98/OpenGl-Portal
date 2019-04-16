@@ -1,4 +1,4 @@
-//Main version. Make NO changes.
+//temp version
 /*
 -------------------Headers-----------------------
 */
@@ -35,7 +35,8 @@ float lxs = -1.0f, lys = 0.0f, lzs = 0.0f;
 //cam1
 float x = -5.0f, z = 18.0f;
 //cam2
-float xside = 9.0f, yside = 2.5f,zside = -7.5f;
+//float x2 = 9.0f, yside = 2.5f,z2 = -7.5f;
+float xside = 4.5f, yside = 2.5f, zside = -9.0f;
 
 //mouse movements
 float halfWidth= (float)(WINDOW_WIDTH/2.0);
@@ -63,7 +64,8 @@ void cam1(){
 //Portal Room 1 side camera
 void cam2(){
     gluLookAt(xside, 2.5f, zside,
-              -4.5,0.3,-7.6,
+              //-4.5,0.3,-7.6,
+              -4.5f, 0.3f, -2.0f,
               roll + 0.0f, 2.5f, 0.0f);
     glFlush();
 }
@@ -90,6 +92,7 @@ void drawRoom1Doors(){
   glVertex3f(-3.0f, 0.0f, 0.0f);
   glEnd();
 
+/*
   //door2
   glColor3f(0.4f, 0.2f, 0.0f);
   glBegin(GL_QUADS);
@@ -97,6 +100,16 @@ void drawRoom1Doors(){
   glVertex3f(9.9f, 5.0f, -9.0f);
   glVertex3f(9.9f, 5.0f, -6.0f);
   glVertex3f(9.9f, 0.0f, -6.0f);
+  glEnd();
+*/
+
+//door2
+  glColor3f(0.4f, 0.2f, 0.0f);
+  glBegin(GL_QUADS);
+  glVertex3f(3.0f, 0.0f, -9.9f);
+  glVertex3f(3.0f, 5.0f, -9.9f);
+  glVertex3f(6.0f, 5.0f, -9.9f);
+  glVertex3f(6.0f, 0.0f, -9.9f);
   glEnd();
 }
 
@@ -152,7 +165,8 @@ void drawBall(float ballx, float bally, float ballz){
 void drawTeaPot(){
   glPushMatrix();
   glColor3f(0.0f, 0.0f, 0.0f);
-  glTranslated(-4.5,0.3,-7.6);
+  //glTranslated(-4.5,0.3,-7.6);
+  glTranslated(-4.5,0.3,-2.0);
   glutSolidTeapot(0.6);
   glPopMatrix();
 }
@@ -287,8 +301,8 @@ void processSpecialKeys(int key, int xx, int yy){
         }
       }
       else if(cam==2){
-          zside -= sin(angle - M_PI/2.0) * fraction;
-          xside -= -cos(angle - M_PI/2.0) * fraction;
+          xside -= sin(angle - M_PI/2.0) * fraction;
+          zside -= -cos(angle - M_PI/2.0) * fraction;
       }
       break;
 
@@ -305,8 +319,8 @@ void processSpecialKeys(int key, int xx, int yy){
         }
       }
       else if(cam==2){
-          zside -= sin(M_PI/2.0 + angle) * fraction;
-          xside -= -cos(M_PI/2.0 + angle) * fraction;
+          xside -= sin(M_PI/2.0 + angle) * fraction;
+          zside -= -cos(M_PI/2.0 + angle) * fraction;
       }
       break;
 
