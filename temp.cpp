@@ -1,6 +1,6 @@
 //temp version
 /*
--------------------Headers-----------------------
+-------------------Headers-------------------------------
 */
 
 #include<iostream>
@@ -8,6 +8,7 @@
 #include<math.h>
 #include<string.h>
 #include<stdio.h>
+#include<stdbool.h>
 #include "imageloader.h"
 
 #ifdef __APPLE__
@@ -30,7 +31,13 @@ float xmin = -8.0;
 float xmax = 8.0;
 float posChasm = 1.0f;
 float negChasm = -3.0f;
-
+char title[] = "Portal system";
+char name1[] = "Rahul Suresh (1PE16CS188)";
+char name2[] = "Chinmoy (1PE16CS189)";
+char configurations[] = "Configurations";
+char room1[] = "Room 1 : User teleportation";
+char room2[] = "Room 2 : Object teleportation";
+char esc[] = "Press 'esc' to quit";
 
 //camera variables
 float angle = 0.0, yAngle = 0.0;
@@ -45,6 +52,8 @@ float x = -5.0f, y = 2.5f, z = 18.0f;
 //cam2
 //float x2 = 9.0f, yside = 2.5f,z2 = -7.5f;
 float xside = -9.0f, yside = 2.5f, zside = -7.5f;
+//cam3
+//float x3 = 0.0f;
 
 //mouse movements
 float halfWidth= (float)(WINDOW_WIDTH/2.0);
@@ -56,6 +65,25 @@ float b1 = 8.0;
 float b2 = 18.0;
 float b3 = 35.0;
 float ang = 0.0;
+
+void reset(){
+  lx = 0.0f;
+  ly = 0.0f;
+  lz = -1.0f;
+  lxs = -1.0f;
+  lys = 0.0f;
+  lzs = 0.0f;
+  x = -5.0f;
+  y = 2.5f;
+  z = 18.0f;
+  xside = -9.0f;
+  yside = 2.5f;
+  zside = -7.5f; 
+  b1 = 8.0;
+  b2 = 18.0;
+  b3 = 35.0;
+  ang = 0.0;
+}
 
 /*
 -------------------Set the cameras-----------------------
@@ -128,49 +156,78 @@ void texLava(){
 }
 
 /*
--------------------Doors-----------------------
+-------------------Doors----------------------------
 */
 
-//draw the portals in room 1 (User teleportation room)
-void drawRoom1Doors(){
-  //door1
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(-6.0f, 0.0f, 3.0f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(-6.0f, 5.0f, 3.0f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(-3.0f, 5.0f, 3.0f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(-3.0f, 0.0f, 3.0f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
+void door(float widthStart, float heightStart, int axis, float axisVal){
+  float width = 3.0;
+  float height = 5.0;
+  switch(axis){
+    case 1: //perp to x axis
+            texPortal();
+            glEnable(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glBegin(GL_QUADS);
+            glNormal3f(0.0f, 0.0f, 1.0f);
+	          glTexCoord2f(0.0f, 0.0f);
+            glVertex3f(axisVal, heightStart,        widthStart);
+            glTexCoord2f(2.0f, 0.0f);          
+            glVertex3f(axisVal, heightStart+height, widthStart);
+            glTexCoord2f(2.0f, 1.0f);
+            glVertex3f(axisVal, heightStart+height, widthStart-width);
+            glTexCoord2f(0.0f, 1.0f);
+            glVertex3f(axisVal, heightStart,        widthStart-width);  
+            glEnd();
+            glDisable(GL_TEXTURE_2D);
+            break;
 
-  //door2
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  //glColor3f(0.4f, 0.2f, 0.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-  glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(-9.9f, 0.0f, -6.0f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(-9.9f, 5.0f, -6.0f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(-9.9f, 5.0f, -9.0f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(-9.9f, 0.0f, -9.0f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
+    case 2: //perp to y axis
+            texPortal();
+            glEnable(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glBegin(GL_QUADS);
+            glNormal3f(0.0f, 0.0f, 1.0f);
+	          glTexCoord2f(0.0f, 0.0f);
+            glVertex3f(heightStart+height, axisVal, widthStart);
+            glTexCoord2f(2.0f, 0.0f);          
+            glVertex3f(heightStart,        axisVal, widthStart);
+            glTexCoord2f(2.0f, 1.0f);
+            glVertex3f(heightStart,        axisVal, widthStart-width);
+            glTexCoord2f(0.0f, 1.0f);
+            glVertex3f(heightStart+height, axisVal, widthStart-width);   
+            glEnd();
+            glDisable(GL_TEXTURE_2D);
+            break;
+
+    case 3: //perp to z axis
+            texPortal();
+            glEnable(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glBegin(GL_QUADS);
+            glNormal3f(0.0f, 0.0f, 1.0f);
+	          glTexCoord2f(0.0f, 0.0f);
+            glVertex3f(widthStart-width, heightStart,        axisVal);
+            glTexCoord2f(2.0f, 0.0f);          
+            glVertex3f(widthStart-width, heightStart+height, axisVal);
+            glTexCoord2f(2.0f, 1.0f);
+            glVertex3f(widthStart,       heightStart+height, axisVal);
+            glTexCoord2f(0.0f, 1.0f);
+            glVertex3f(widthStart,       heightStart,        axisVal); 
+            glEnd(); 
+            glDisable(GL_TEXTURE_2D);   
+            break;
+  }
+}
+
+void drawRoom1Doors(){
+  door(-3.0f ,0.0f ,3 ,3.0f);
+  door(-6.0f ,0.0f ,1 ,-9.9f);
 
   //chasm top layer
   glColor3f(0.0f, 0.0f, 0.0f);
@@ -191,83 +248,11 @@ void drawRoom1Doors(){
   glEnd();
 }
 
-//draw the portals in room 2 (Object teleportation room)
 void drawRoom2Doors(){
-  //door1
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(-6.0f, 0.0f, 0.0f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(-6.0f, 5.0f, 0.0f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(-3.0f, 5.0f, 0.0f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(-3.0f, 0.0f, 0.0f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
-
-  //door2
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(9.9f, 0.0f, -9.0f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(9.9f, 5.0f, -9.0f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(9.9f, 5.0f, -6.0f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(9.9f, 0.0f, -6.0f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
-
-  //door3
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(-9.9f, 0.0f, -9.0f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(-9.9f, 5.0f, -9.0f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(-9.9f, 5.0f, -6.0f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(-9.9f, 0.0f, -6.0f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
-
-  //door4
-  texPortal();
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f);
-  glVertex3f(7.5f, 6.9f, 1.5f);
-  glTexCoord2f(2.0f, 0.0f);
-  glVertex3f(2.5f, 6.9f, 1.5f);
-  glTexCoord2f(2.0f, 1.0f);
-  glVertex3f(2.5f, 6.9f, -1.5f);
-  glTexCoord2f(0.0f, 1.0f);
-  glVertex3f(7.5f, 6.9f, -1.5f);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
+  door(-3.0f, 0.0f, 3, 0.0f);
+  door(-6.0f, 0.0f, 1, 9.9f);
+  door(-6.0f, 0.0f, 1, -9.9f);
+  door(1.5f, 2.5f, 2, 6.9f);
 }
 
 /*
@@ -299,13 +284,12 @@ void drawTeaPot(){
 */
 
 void fall(){
-  y -= 0.05;
+  y -= 0.08;
 }
 
 //main animation function
 void renderScene(void){
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
 	glBindTexture(GL_TEXTURE_2D, _textureId);
 
   if(choice==1 || choice==2){
@@ -451,8 +435,75 @@ void renderScene(void){
   }
 }
 
+void scene1(void){
+  glClearColor(1.0, 1.0, 1.0, 0.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glColor3f(0.0, 0.0, 0.0);  
+  glLineWidth(2.0);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluOrtho2D(0, 2500, 0, 2500);
+
+  //title
+  glPushMatrix();  
+  glTranslatef(50,2000,0);
+  for (int i = 0; i < strlen(title); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, title[i]);
+  }
+  glPopMatrix();
+
+  //Name1
+  glPushMatrix();  
+  glTranslatef(50,1600,0);
+  for (int i = 0; i < strlen(name1); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, name1[i]);
+  }
+  glPopMatrix();
+
+  ///Name2
+  glPushMatrix();  
+  glTranslatef(50,1400,0);
+  for (int i = 0; i < strlen(name2); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, name2[i]);
+  }
+  glPopMatrix();
+
+  //Configurations
+  glPushMatrix();  
+  glTranslatef(50,1000,0);
+  for (int i = 0; i < strlen(configurations); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, configurations[i]);
+  }
+  glPopMatrix();
+
+  //Room1 desc
+  glPushMatrix();  
+  glTranslatef(50,800,0);
+  for (int i = 0; i < strlen(room1); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, room1[i]);
+  }
+  glPopMatrix();
+
+  //Room2 desc
+  glPushMatrix();  
+  glTranslatef(50,600,0);
+  for (int i = 0; i < strlen(room2); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, room2[i]);
+  }
+  glPopMatrix();
+
+  //Quit
+  glPushMatrix();  
+  glTranslatef(50,400,0);
+  for (int i = 0; i < strlen(esc); i++) {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, esc[i]);
+  }
+  glPopMatrix();
+  glutSwapBuffers();
+}
+
 /*
--------------------special key functions-----------------------
+-------------------Rest-----------------------
 */
 
 //keyboard keys
@@ -479,6 +530,7 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //right arrow key event
+
     case GLUT_KEY_RIGHT:
       if(cam==1){
           x += sin(M_PI/2.0 + angle) * fraction;
@@ -497,6 +549,7 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //top arrow key event
+
     case GLUT_KEY_UP:
       if(choice==1){
         if(x<-3 && x>-6 && z<3.5){
@@ -514,6 +567,7 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //bottom arrow key event
+
     case GLUT_KEY_DOWN:
       if(choice==1){
         if(cam==1){
@@ -525,6 +579,22 @@ void processSpecialKeys(int key, int xx, int yy){
             zside += lzs * fraction;
         }
       }
+      break;
+
+    
+    case 'c':
+      if(choice==1)
+        choice = 2;
+      else if(choice==2){
+        choice = 1;
+        cam = 1;
+      }
+      reset();
+      break;
+
+    
+    case 'r':
+      reset();
       break;
 
     //Exit
@@ -551,11 +621,11 @@ void processMouseMovement(int xx, int yy){
 void demo_menu(int id){
   switch(id){
     case 0:exit(0);
-           break;
+          break;
     case 1:choice=1;
-           break;
+          break;
     case 2:choice=2;
-           break;
+          break;
   }
   glutPostRedisplay();
 }
@@ -586,17 +656,22 @@ void animate () {
 int main(int argc, char **argv){
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
-  glutInitWindowPosition(0,0);
+  //description window
+  glutInitWindowPosition(0, 200);
+  glutInitWindowSize(430,500);
+  glutCreateWindow("Project description");
+  glutDisplayFunc(scene1);
+  //portal window
+  glutInitWindowPosition(435,150);
   glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
   glutCreateWindow("Portal");
   initRendering();
-
+  //menu
   int config = glutCreateMenu(demo_menu);
   glutAddMenuEntry("Enter Portal Room 1",1);
   glutAddMenuEntry("Enter Portal Room 2",2);
   glutAddMenuEntry("Exit",0);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
-
   glutDisplayFunc(renderScene);
   glutReshapeFunc(changeSize);
   glutIdleFunc(animate);
