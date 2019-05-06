@@ -18,10 +18,11 @@
 #include <GL/glut.h>
 #endif
 
+#include "var.h"
 /*
 -------------------Global variables-----------------------
 */
-
+/*
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 1000
 using namespace std;
@@ -31,13 +32,7 @@ float xmin = -8.0;
 float xmax = 8.0;
 float posChasm = 1.0f;
 float negChasm = -3.0f;
-char title[] = "Portal system";
-char name1[] = "Rahul Suresh (1PE16CS188)";
-char name2[] = "Chinmoy Dutta (1PE16CS189)";
-char configurations[] = "Configurations";
-char room1[] = "Room 1 : User teleportation";
-char room2[] = "Room 2 : Object teleportation";
-char esc[] = "Press 'esc' to quit";
+int flag=0;
 
 //camera variables
 float angle = 0.0, yAngle = 0.0;
@@ -65,7 +60,7 @@ float b1 = 8.0;
 float b2 = 18.0;
 float b3 = 35.0;
 float ang = 0.0;
-
+*/
 void reset(){
   lx = 0.0f;
   ly = 0.0f;
@@ -435,73 +430,6 @@ void renderScene(void){
   }
 }
 
-void scene1(void){
-  glClearColor(1.0, 1.0, 1.0, 0.0);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glColor3f(0.0, 0.0, 0.0);  
-  glLineWidth(2.0);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0, 2500, 0, 2500);
-
-  //title
-  glPushMatrix();  
-  glTranslatef(50,2000,0);
-  for (int i = 0; i < strlen(title); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, title[i]);
-  }
-  glPopMatrix();
-
-  //Name1
-  glPushMatrix();  
-  glTranslatef(50,1600,0);
-  for (int i = 0; i < strlen(name1); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, name1[i]);
-  }
-  glPopMatrix();
-
-  ///Name2
-  glPushMatrix();  
-  glTranslatef(50,1400,0);
-  for (int i = 0; i < strlen(name2); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, name2[i]);
-  }
-  glPopMatrix();
-
-  //Configurations
-  glPushMatrix();  
-  glTranslatef(50,1000,0);
-  for (int i = 0; i < strlen(configurations); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, configurations[i]);
-  }
-  glPopMatrix();
-
-  //Room1 desc
-  glPushMatrix();  
-  glTranslatef(50,800,0);
-  for (int i = 0; i < strlen(room1); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, room1[i]);
-  }
-  glPopMatrix();
-
-  //Room2 desc
-  glPushMatrix();  
-  glTranslatef(50,600,0);
-  for (int i = 0; i < strlen(room2); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, room2[i]);
-  }
-  glPopMatrix();
-
-  //Quit
-  glPushMatrix();  
-  glTranslatef(50,400,0);
-  for (int i = 0; i < strlen(esc); i++) {
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, esc[i]);
-  }
-  glPopMatrix();
-  glutSwapBuffers();
-}
-
 /*
 -------------------Rest-----------------------
 */
@@ -530,7 +458,6 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //right arrow key event
-
     case GLUT_KEY_RIGHT:
       if(cam==1){
           x += sin(M_PI/2.0 + angle) * fraction;
@@ -549,7 +476,6 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //top arrow key event
-
     case GLUT_KEY_UP:
       if(choice==1){
         if(x<-3 && x>-6 && z<3.5){
@@ -567,7 +493,6 @@ void processSpecialKeys(int key, int xx, int yy){
       break;
 
     //bottom arrow key event
-
     case GLUT_KEY_DOWN:
       if(choice==1){
         if(cam==1){
@@ -597,6 +522,11 @@ void processSpecialKeys(int key, int xx, int yy){
       reset();
       break;
 
+    case 13:
+      if(flag==0) //Ascii of 'enter' key is 13
+      flag=1;
+      break;
+
     //Exit
     case 27:
         exit(0);
@@ -623,8 +553,10 @@ void demo_menu(int id){
     case 0:exit(0);
           break;
     case 1:choice=1;
+          reset();
           break;
     case 2:choice=2;
+          reset();
           break;
   }
   glutPostRedisplay();
@@ -641,6 +573,7 @@ void changeSize(int w, int h){
   halfWidth = (float)(w/2.0);
   halfHeight = (float)(h/2.0);
   gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+  //gluPerspective(45.0f, ratio, 0.1f, 200.0f);
   glMatrixMode(GL_MODELVIEW);
 }
 
@@ -657,10 +590,10 @@ int main(int argc, char **argv){
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
   //description window
-  glutInitWindowPosition(0, 200);
-  glutInitWindowSize(430,500);
-  glutCreateWindow("Project description");
-  glutDisplayFunc(scene1);
+  //glutInitWindowPosition(0, 200);
+  //glutInitWindowSize(430,500);
+  //glutCreateWindow("Project description");
+  //glutDisplayFunc(scene1);
   //portal window
   glutInitWindowPosition(435,150);
   glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
