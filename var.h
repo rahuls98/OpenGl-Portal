@@ -5,8 +5,8 @@
 using namespace std;
 GLdouble cp_eqn[4] = {0.0, 0.0, 1.0, 0.0};
 int choice;
-float xmin = -8.0;
-float xmax = 8.0;
+float xmin = -6.0;
+float xmax = 6.0;
 float posChasm = 1.0f;
 float negChasm = -3.0f;
 char title[] = "Portal system";
